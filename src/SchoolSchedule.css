@@ -1,0 +1,40 @@
+.school-schedule {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .week-selector {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .week-selector button {
+    font-size: 16px;
+    padding: 10px 20px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    outline: none;
+  }
+  
+  .week-selector button.active {
+    font-weight: bold;
+  }
+  
+  .schedule {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  
+  .period {
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .period h3 {
+    margin-top: 0;
+  }
+  
