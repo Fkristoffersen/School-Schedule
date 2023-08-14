@@ -17,7 +17,7 @@ const initialPeriods: Period[] = [
 ];
 
 // List of available subjects
-const subjects = ['Math', 'English', 'Science', 'History'];
+const subjects = ['Math', 'English', 'Science', 'History', 'test'];
 
 // SchoolSchedule component using a Functional Component with React hooks
 const SchoolSchedule: React.FC = () => {
