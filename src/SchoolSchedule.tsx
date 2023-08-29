@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
-import './SchoolSchedule.css'; 
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'; 
+import './SchoolSchedule.css';
 
-// Define the structure of a Period object
+interface Subject {
+  subject_id: number;
+  subject_name: string;
+}
+
 interface Period {
   id: number;
   name: string;
@@ -9,30 +14,34 @@ interface Period {
   week2: string;
 }
 
-// Initial data for periods with example values
 const initialPeriods: Period[] = [
   { id: 1, name: 'Period 1', week1: 'Math', week2: 'English' },
   { id: 2, name: 'Period 2', week1: 'Science', week2: 'History' },
   { id: 3, name: 'Period 3', week1: 'Science', week2: 'History' },
 ];
 
-// List of available subjects
-const subjects = ['Math', 'English', 'Science', 'History', 'test'];
-
-// SchoolSchedule component using a Functional Component with React hooks
 const SchoolSchedule: React.FC = () => {
-  // State variables to track the current week and periods
   const [currentWeek, setCurrentWeek] = useState(1);
   const [periods, setPeriods] = useState(initialPeriods);
+  const [subjects, setSubjects] = useState<Subject[]>([]); // State for fetched subjects
 
-  // Handler for changing the current week
+  useEffect(() => {
+    // Fetch subjects from the database
+    axios.get('/api/subjects') // Replace with your API endpoint
+      .then(response => {
+        const fetchedSubjects: Subject[] = response.data;
+        setSubjects(fetchedSubjects); // Set subjects in component state
+      })
+      .catch(error => {
+        console.error('Error fetching subjects:', error);
+      });
+  }, []);
+
   const handleWeekChange = (week: number) => {
     setCurrentWeek(week);
   };
 
-  // Handler for changing the selected subject for a specific period and week
   const handlePeriodChange = (id: number, week: number, value: string) => {
-    // Update the periods array with the new subject
     const updatedPeriods = periods.map(period =>
       period.id === id
         ? week === 1
@@ -40,13 +49,11 @@ const SchoolSchedule: React.FC = () => {
           : { ...period, week2: value }
         : period
     );
-    // Update the periods state with the updated array
     setPeriods(updatedPeriods);
   };
 
   return (
     <div className="school-schedule">
-      {/* Section for selecting the current week */}
       <div className="week-selector">
         <button className={currentWeek === 1 ? 'active' : ''} onClick={() => handleWeekChange(1)}>
           Week 1
@@ -55,20 +62,17 @@ const SchoolSchedule: React.FC = () => {
           Week 2
         </button>
       </div>
-      {/* Section for displaying and editing periods */}
       <div className="schedule">
         {periods.map(period => (
           <div key={period.id} className="period">
             <h3>{period.name}</h3>
-            {/* Dropdown for selecting the subject */}
             <select
               value={currentWeek === 1 ? period.week1 : period.week2}
               onChange={e => handlePeriodChange(period.id, currentWeek, e.target.value)}
             >
-              {/* Mapping over subjects to create option elements */}
               {subjects.map(subject => (
-                <option key={subject} value={subject}>
-                  {subject}
+                <option key={subject.subject_id} value={subject.subject_name}>
+                  {subject.subject_name}
                 </option>
               ))}
             </select>
